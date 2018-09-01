@@ -1,6 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, View, FlatList, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TextInput, AsyncStorage } from 'react-native';
 import { Constants } from 'expo';
+
+const textKey = 'textKey';
 
 export default class App extends React.Component {
   constructor(){
@@ -8,6 +10,10 @@ export default class App extends React.Component {
     this.state = {
       note: '',
     }
+  }
+
+  componentWillMount(){
+    AsyncStorage.getItem(textKey).then(text => { this.setState({ note: text })})
   }
 
   textChanged = (text) => {
@@ -21,6 +27,7 @@ export default class App extends React.Component {
     this.setState({
       note: event.nativeEvent.text,
     })
+    AsyncStorage.setItem(textKey, event.nativeEvent.text)
   }
 
   render() {
@@ -48,7 +55,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: Constants.statusBarHeight+10,
+    paddingTop: Constants.statusBarHeight,
   },
   item: {
     paddingHorizontal: 10,
