@@ -1,34 +1,42 @@
 import React from 'react';
-import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TextInput } from 'react-native';
 import { Constants } from 'expo';
 
 export default class App extends React.Component {
   constructor(){
-  super()
+    super();
     this.state = {
-      items: [
-        { title: 'title1', content: 'content111111111111111111111', isDone: true, created: new Date() },
-        { title: 'title2', content: 'content11111111111111111111122222222', isDone: false, created: new Date() },
-        { title: 'title3', content: 'content11111111111111111111133333333', isDone: false, created: new Date() },
-        { title: 'title4', content: 'content1111111111111111111114444444', isDone: false, created: new Date() },
-        { title: 'title5', content: 'content11111111111111111111155555555', isDone: false, created: new Date() },
-        { title: 'title6', content: 'content1111111111111111111116666666666', isDone: true, created: new Date() },
-      ]
+      note: '',
     }
   }
 
-  renderItem = ({ item }) => (
-    !item.isDone ? <View style={styles.item}>
-      <Text>{item.title}</Text>
-      <Text>{item.content}</Text>
-      <Text>{item.created.toString()}</Text>
-    </View> : null
-  );
+  textChanged = (text) => {
+    this.setState({
+      note: text,
+    })
+  }
+
+  submit = (event) => {
+    console.log('sadasdasdsaddsasdasda', event.nativeEvent);
+    this.setState({
+      note: event.nativeEvent.text,
+    })
+  }
 
   render() {
     return (
       <View style={styles.container}>
-        <FlatList data={this.state.items} renderItem={this.renderItem} />
+        <TextInput
+          placeholder="Enter text"
+          returnKeyType="done"
+          value={this.state.value}
+          onChangeText={this.textChanged}
+          onSubmitEditing={this.submit}
+          style={styles.input}
+        />
+        <View>
+          <Text style={styles.title}>{this.state.note}</Text>
+        </View>
       </View>
     );
   }
@@ -40,6 +48,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: Constants.statusBarHeight,
+    paddingTop: Constants.statusBarHeight+10,
   },
+  item: {
+    paddingHorizontal: 10,
+  },
+  title: {
+    fontWeight: 'bold',
+    marginVertical: 5,
+  },
+  content: {
+    marginBottom: 10,
+  },
+  input: {
+    width: '80%',
+    height: 40,
+  }
 });
