@@ -15,7 +15,7 @@ export default class App extends React.Component {
   }
 
   componentWillMount(){
-    AsyncStorage.getItem(textKey).then(notes => { this.setState({ notes: JSON.parse(notes) })})
+    AsyncStorage.getItem(textKey).then(notes => { this.setState({ notes: JSON.parse(notes) || [] })})
   }
 
   textChanged = (text) => {
@@ -28,8 +28,7 @@ export default class App extends React.Component {
     console.log('submit', event.nativeEvent);
     this.setState(state => ({
       notes: [...state.notes, state.value]
-    }))
-    AsyncStorage.setItem(textKey, JSON.stringify(this.state.notes))
+    }), () => { AsyncStorage.setItem(textKey, JSON.stringify(this.state.notes))})
   }
 
   onRemove = (index) => {
@@ -112,6 +111,5 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     borderStyle: 'solid',
     borderRadius: 3,
-    display: 'inline',
   }
 });
