@@ -2,10 +2,31 @@ import React from 'react';
 import { StyleSheet, Text, View, FlatList } from 'react-native';
 
 export default class App extends React.Component {
+  constructor(){
+  super()
+    this.state = {
+      items: [
+        { title: 'title1', content: 'content111111111111111111111' },
+        { title: 'title2', content: 'content11111111111111111111122222222' },
+        { title: 'title3', content: 'content11111111111111111111133333333' },
+        { title: 'title4', content: 'content1111111111111111111114444444' },
+        { title: 'title5', content: 'content11111111111111111111155555555' },
+        { title: 'title6', content: 'content1111111111111111111116666666666' }
+      ]
+    }
+  }
+
+  renderItem = ({ item }) => (
+    <View style={styles.item}>
+      <Text style={styles.title}>{item.title}</Text>
+      <Text style={styles.content}>{item.content}</Text>
+    </View>
+  );
+
   render() {
     return (
       <View style={styles.container}>
-        <Text>Some text</Text>
+        <FlatList data={this.state.items} renderItem={this.renderItem} />
       </View>
     );
   }
