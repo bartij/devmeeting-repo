@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, AsyncStorage, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, AsyncStorage, TouchableOpacity, Button } from 'react-native';
 import { Constants } from 'expo';
 import { Ionicons } from '@expo/vector-icons'
 
@@ -38,6 +38,17 @@ export default class App extends React.Component {
     }))
   }
 
+  onEdit = (index) => {
+    this.setState(state => ({
+      notes: this.state.notes.map((note, ind) => {
+        if(ind === index) {
+          return this.state.value;
+        }
+        return note;
+      } ),
+    }))
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -53,12 +64,16 @@ export default class App extends React.Component {
           { this.state.notes.map((note, index) =>
             <View style={styles.listItem}>
               <Text style={styles.title}>{note}</Text>
-              <TouchableOpacity
+              <Button
                 onPress={() => this.onRemove(index)}
                 style={styles.removeButton}
-              >
-                <Text>Remove</Text>
-              </TouchableOpacity>
+                title='Remove'
+              />
+              <Button
+                onPress={() => this.onEdit(index)}
+                style={styles.removeButton}
+                title='Replace'
+              />
             </View>
           )}
         </View>
@@ -97,5 +112,6 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     borderStyle: 'solid',
     borderRadius: 3,
+    display: 'inline',
   }
 });
