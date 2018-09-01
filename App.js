@@ -7,20 +7,21 @@ export default class App extends React.Component {
   super()
     this.state = {
       items: [
-        { title: 'title1', content: 'content111111111111111111111', isDone: true },
-        { title: 'title2', content: 'content11111111111111111111122222222', isDone: false },
-        { title: 'title3', content: 'content11111111111111111111133333333', isDone: false },
-        { title: 'title4', content: 'content1111111111111111111114444444', isDone: false },
-        { title: 'title5', content: 'content11111111111111111111155555555', isDone: false },
-        { title: 'title6', content: 'content1111111111111111111116666666666', isDone: true }
+        { title: 'title1', content: 'content111111111111111111111', isDone: true, created: new Date() },
+        { title: 'title2', content: 'content11111111111111111111122222222', isDone: false, created: new Date() },
+        { title: 'title3', content: 'content11111111111111111111133333333', isDone: false, created: new Date() },
+        { title: 'title4', content: 'content1111111111111111111114444444', isDone: false, created: new Date() },
+        { title: 'title5', content: 'content11111111111111111111155555555', isDone: false, created: new Date() },
+        { title: 'title6', content: 'content1111111111111111111116666666666', isDone: true, created: new Date() },
       ]
     }
   }
 
   renderItem = ({ item }) => (
     !item.isDone ? <View style={styles.item}>
-      <Text style={styles.title}>{item.title}</Text>
-      <Text style={styles.content}>{item.content}</Text>
+      <Text>{item.title}</Text>
+      <Text>{item.content}</Text>
+      <Text>{item.created.toString()}</Text>
     </View> : null
   );
 
