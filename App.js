@@ -27,28 +27,43 @@ export default class App extends React.Component {
   submit = (event) => {
     console.log('submit', event.nativeEvent);
     this.setState(state => ({
-      notes: [...state.notes, state.value]
+      notes: [...state.notes, { text: state.value }]
     }), () => { AsyncStorage.setItem(textKey, JSON.stringify(this.state.notes))})
   }
 
   onRemove = (index) => {
     this.setState(state => ({
-      notes: this.state.notes.filter((note, ind) => ind !== index),
-    }))
+      notes: state.notes.filter((note, ind) => ind !== index),
+    }), () => { AsyncStorage.setItem(textKey, JSON.stringify(this.state.notes))})
   }
 
   onEdit = (index) => {
     this.setState(state => ({
       notes: this.state.notes.map((note, ind) => {
         if(ind === index) {
-          return this.state.value;
+          return { ...note, text: this.state.value }
         }
         return note;
       } ),
     }))
   }
 
+  handleDone = index => {
+    this.setState(state => ({
+      notes: state.notes.map((note,ind) => {
+        if (index === ind) {
+          return {
+            text: note.text,
+            isDone: !note.isDone,
+          }
+        }
+        return note;
+      })
+    }))
+  }
+
   render() {
+    console.log(this.state.notes);
     return (
       <View style={styles.container}>
         <TextInput
@@ -62,7 +77,12 @@ export default class App extends React.Component {
         <View>
           { this.state.notes.map((note, index) =>
             <View style={styles.listItem}>
-              <Text style={styles.title}>{note}</Text>
+              <TouchableOpacity
+                onPress={() => this.handleDone(index)}
+              >
+                <Text style={styles.title}>{note.text}</Text>
+                { note.isDone && <Ionicons name="md-checkmark-circle" size={32} color="green" /> }
+              </TouchableOpacity>
               <Button
                 onPress={() => this.onRemove(index)}
                 style={styles.removeButton}
@@ -76,7 +96,6 @@ export default class App extends React.Component {
             </View>
           )}
         </View>
-        <Ionicons name="md-checkmark-circle" size={32} color="green" />
       </View>
     );
   }
@@ -97,6 +116,7 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: 'bold',
     marginVertical: 5,
+    marginHorizontal: 10,
   },
   content: {
     marginBottom: 10,
