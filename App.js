@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, TextInput, AsyncStorage, TouchableOpacity } from 'react-native';
 import { Constants } from 'expo';
+import { Ionicons } from '@expo/vector-icons'
 
 const textKey = 'textKey';
 
@@ -8,26 +9,33 @@ export default class App extends React.Component {
   constructor(){
     super();
     this.state = {
-      note: '',
+      notes: [],
+      value: '',
     }
   }
 
   componentWillMount(){
-    AsyncStorage.getItem(textKey).then(text => { this.setState({ note: text })})
+    AsyncStorage.getItem(textKey).then(notes => { this.setState({ notes: JSON.parse(notes) })})
   }
 
   textChanged = (text) => {
     this.setState({
-      note: text,
+      value: text,
     })
   }
 
   submit = (event) => {
-    console.log('sadasdasdsaddsasdasda', event.nativeEvent);
-    this.setState({
-      note: event.nativeEvent.text,
-    })
-    AsyncStorage.setItem(textKey, event.nativeEvent.text)
+    console.log('submit', event.nativeEvent);
+    this.setState(state => ({
+      notes: [...state.notes, state.value]
+    }))
+    AsyncStorage.setItem(textKey, JSON.stringify(this.state.notes))
+  }
+
+  onRemove = (index) => {
+    this.setState(state => ({
+      notes: this.state.notes.filter((note, ind) => ind !== index),
+    }))
   }
 
   render() {
@@ -42,8 +50,19 @@ export default class App extends React.Component {
           style={styles.input}
         />
         <View>
-          <Text style={styles.title}>{this.state.note}</Text>
+          { this.state.notes.map((note, index) =>
+            <View style={styles.listItem}>
+              <Text style={styles.title}>{note}</Text>
+              <TouchableOpacity
+                onPress={() => this.onRemove(index)}
+                style={styles.removeButton}
+              >
+                <Text>Remove</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
+        <Ionicons name="md-checkmark-circle" size={32} color="green" />
       </View>
     );
   }
@@ -57,8 +76,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingTop: Constants.statusBarHeight,
   },
-  item: {
+  listItem: {
     paddingHorizontal: 10,
+    flexDirection: 'column',
   },
   title: {
     fontWeight: 'bold',
@@ -70,5 +90,12 @@ const styles = StyleSheet.create({
   input: {
     width: '80%',
     height: 40,
+  },
+  removeButton: {
+    padding: 5,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderStyle: 'solid',
+    borderRadius: 3,
   }
 });
